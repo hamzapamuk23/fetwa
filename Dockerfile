@@ -1,9 +1,11 @@
 # ══════════════════════════════════════════════════════════════════════════════
-# Fatwa API Gateway — Multi-stage Dockerfile (Java 25, Eclipse Temurin)
+# Fatwa API Gateway — Multi-stage Dockerfile
+# Build: Java 21 (Gradle compatibility) — Toolchain auto-provisions JDK 25
+# Runtime: Java 25 JRE (target)
 # ══════════════════════════════════════════════════════════════════════════════
 
 # ── Stage 1: Build ────────────────────────────────────────────────────────────
-FROM eclipse-temurin:25-jdk AS build
+FROM eclipse-temurin:21-jdk AS build
 
 WORKDIR /workspace
 
@@ -44,7 +46,7 @@ EXPOSE 8080
 # JVM flags optimized for containers with virtual threads
 ENTRYPOINT ["java", \
     "-XX:+UseZGC", \
-    "-XX:+ZGenerational", \
     "-XX:MaxRAMPercentage=75.0", \
     "-Djava.security.egd=file:/dev/./urandom", \
     "-jar", "app.jar"]
+

@@ -17,7 +17,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fatwa -d fatwa_db"]
+      test: [ "CMD-SHELL", "pg_isready -U fatwa -d fatwa_db" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -42,11 +42,11 @@ services:
   valkey:
     image: valkey/valkey:8.1
     container_name: fatwa-valkey
-    command: ["valkey-server", "--save", "", "--appendonly", "no"]
+    command: [ "valkey-server", "--save", "", "--appendonly", "no" ]
     ports:
       - "6379:6379"
     healthcheck:
-      test: ["CMD", "valkey-cli", "ping"]
+      test: [ "CMD", "valkey-cli", "ping" ]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -59,12 +59,13 @@ services:
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: root
       VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+      VAULT_ADDR: "http://127.0.0.1:8200"
     ports:
       - "8200:8200"
     cap_add:
       - IPC_LOCK
     healthcheck:
-      test: ["CMD", "vault", "status"]
+      test: [ "CMD", "vault", "status" ]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -79,7 +80,7 @@ services:
       - "8500:8500"
       - "8600:8600/udp"
     healthcheck:
-      test: ["CMD", "consul", "members"]
+      test: [ "CMD", "consul", "members" ]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -89,7 +90,7 @@ services:
   tempo:
     image: grafana/tempo:2.10.7
     container_name: fatwa-tempo
-    command: ["-config.file=/etc/tempo.yaml"]
+    command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ./infra/tempo/tempo.yaml:/etc/tempo.yaml:ro
       - tempo_data:/var/tempo
@@ -101,7 +102,7 @@ services:
   loki:
     image: grafana/loki:3.7.2
     container_name: fatwa-loki
-    command: ["-config.file=/etc/loki/loki.yaml"]
+    command: [ "-config.file=/etc/loki/loki.yaml" ]
     volumes:
       - ./infra/loki/loki.yaml:/etc/loki/loki.yaml:ro
       - loki_data:/loki
