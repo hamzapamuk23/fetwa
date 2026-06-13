@@ -1,0 +1,83 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Fatwa API Gateway — Application Configuration
+# ══════════════════════════════════════════════════════════════════════════════
+
+server:
+  port: 8080
+  http2:
+    enabled: true
+
+spring:
+  application:
+    name: fatwa-api-gateway
+
+  threads:
+    virtual:
+      enabled: true
+
+  # ── Config Import (Spring Boot 4.x — replaces bootstrap.yml) ────────────
+  config:
+    import:
+      - "vault://"
+      - "consul:"
+
+  # ── Spring Cloud Vault ──────────────────────────────────────────────────
+  cloud:
+    vault:
+      host: localhost
+      port: 8200
+      scheme: http
+      authentication: TOKEN
+      token: root
+
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        register: true
+        instance-id: ${spring.application.name}:${random.value}
+        prefer-ip-address: true
+
+  # ── Valkey (Redis-compatible) Reactive ──────────────────────────────────
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  # ── Flyway (uses JDBC — blocking, startup-only) ────────────────────────
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/fatwa_db
+    user: fatwa
+    password: fatwa_secret
+    locations: classpath:db/migration
+
+# ── Hibernate Reactive (Vert.x — non-blocking) ───────────────────────────
+hibernate:
+  reactive:
+    url: postgresql://localhost:5432/fatwa_db
+    user: fatwa
+    password: fatwa_secret
+
+# ── Observability (OTLP → Grafana Alloy) ─────────────────────────────────
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+    metrics:
+      export:
+        endpoint: http://localhost:4318/v1/metrics
+        step: 10s
+
+# ── Logging with Trace Correlation ────────────────────────────────────────
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [traceId=%X{traceId} spanId=%X{spanId}] %-5level %logger{36} - %msg%n"
+  level:
+    ai.fatwa.gateway: DEBUG
+    org.springframework.cloud.vault: INFO
+    org.springframework.cloud.consul: INFO
