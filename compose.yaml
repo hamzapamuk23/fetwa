@@ -6,18 +6,18 @@ services:
 
   # ── 1. PostgreSQL ─────────────────────────────────────────────────────────
   postgres:
-    image: postgres:17
+    image: postgres:18
     container_name: fatwa-postgres
     environment:
-      POSTGRES_DB: fatwa_db
+      POSTGRES_DB: fatwa
       POSTGRES_USER: fatwa
       POSTGRES_PASSWORD: fatwa_secret
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U fatwa -d fatwa_db" ]
+      test: [ "CMD-SHELL", "pg_isready -U fatwa -d fatwa" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -40,7 +40,7 @@ services:
 
   # ── 3. Valkey (Redis-compatible) ─────────────────────────────────────────
   valkey:
-    image: valkey/valkey:8.1
+    image: valkey/valkey:9.1
     container_name: fatwa-valkey
     command: [ "valkey-server", "--save", "", "--appendonly", "no" ]
     ports:
@@ -157,10 +157,10 @@ services:
     container_name: fatwa-api-gateway
     environment:
       # Override config for Docker network (service names instead of localhost)
-      SPRING_FLYWAY_URL: jdbc:postgresql://postgres:5432/fatwa_db
+      SPRING_FLYWAY_URL: jdbc:postgresql://postgres:5432/fatwa
       SPRING_FLYWAY_USER: fatwa
       SPRING_FLYWAY_PASSWORD: fatwa_secret
-      HIBERNATE_REACTIVE_URL: postgresql://postgres:5432/fatwa_db
+      HIBERNATE_REACTIVE_URL: postgresql://postgres:5432/fatwa
       HIBERNATE_REACTIVE_USER: fatwa
       HIBERNATE_REACTIVE_PASSWORD: fatwa_secret
       SPRING_DATA_REDIS_HOST: valkey

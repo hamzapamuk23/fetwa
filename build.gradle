@@ -33,7 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     // ── Reactive Data ───────────────────────────────────────────────────
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+    implementation 'io.valkey.springframework.boot:spring-boot-starter-data-valkey:1.0.0'
     implementation 'org.hibernate.reactive:hibernate-reactive-core:3.4.1.Final'
     implementation 'io.vertx:vertx-pg-client:5.1.1'
 

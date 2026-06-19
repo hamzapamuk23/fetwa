@@ -48,7 +48,7 @@ spring:
   # ── Flyway (uses JDBC — blocking, startup-only) ────────────────────────
   flyway:
     enabled: true
-    url: jdbc:postgresql://localhost:5432/fatwa_db
+    url: jdbc:postgresql://localhost:5432/fatwa
     user: fatwa
     password: fatwa_secret
     locations: classpath:db/migration
@@ -56,7 +56,7 @@ spring:
 # ── Hibernate Reactive (Vert.x — non-blocking) ───────────────────────────
 hibernate:
   reactive:
-    url: postgresql://localhost:5432/fatwa_db
+    url: postgresql://localhost:5432/fatwa
     user: fatwa
     password: fatwa_secret
 
